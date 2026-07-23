@@ -1,9 +1,11 @@
-# YC Application — WARDEN
+# YC Application — WARDEN  ★ PRIMARY
 ### RFS category: Software for Agents
 ### Tagline (≤50 chars): "The control plane for AI agents in production."
 
-> Note to founder: bracketed [ ] fields are the things only you can fill — traction
-> numbers, your bio, design-partner names. Everything else is written to submit.
+> Status after 4 rounds of adversarial review: the strongest application for a
+> technical founder, because founder-market fit is provable here, not borrowed.
+> Bracketed [ ] fields are the real traction/bio only the founder can supply — but
+> §"Traction bar" states exactly what has to be true for this to be a YES.
 
 ---
 
@@ -13,122 +15,140 @@ Runtime control plane + audit log for AI agents.
 ## What is your company going to make?
 
 WARDEN is the control plane companies install before they let AI agents touch
-production. Today, when a team deploys an internal agent, that agent ends up holding
+production. Today, when a team ships an internal agent, that agent ends up holding
 live API keys, database credentials, and prod access with no leash — it can do
 anything the human who deployed it can, and nobody can prove afterward what it did.
-That is a SOC 2 / ISO / incident-response nightmare, and it is happening at every
-company shipping agents right now.
+That's a SOC 2 / incident-response nightmare, and right now it's the #1 reason agents
+stall in "pilot" and never reach production.
 
-WARDEN sits between your agents and everything they touch and gives you four things:
-1. **Scoped, revocable credentials** — agents get short-lived, least-privilege
-   access issued per task, never your raw keys. Kill switch on every agent.
-2. **A real-time policy engine** — "this agent may spend ≤$500, only call these
-   tools, only touch these records; anything above that needs a human to approve."
-3. **Human-in-the-loop approvals** — high-risk actions pause for a one-click approve
-   in Slack/console instead of executing silently.
-4. **A complete, replayable audit log of record** — every action every agent took,
-   across every tool, queryable and exportable for your auditor. This is the piece
-   nobody else has, and it's our moat: identity vendors capture *access granted*;
-   we capture *actions taken across every system*, which is what compliance and
-   incident response actually need.
+WARDEN gives four things:
+1. **Scoped, revocable credentials** — agents get short-lived, least-privilege access
+   issued per task, never your raw keys. One-click kill switch per agent.
+2. **A real-time policy engine** — "this agent may spend ≤$500, call only these tools,
+   touch only these records; anything above needs a human."
+3. **Human-in-the-loop approvals** — high-risk actions pause for a one-click approve in
+   Slack/console instead of executing silently.
+4. **The audit log of record** — every action every agent took, across every tool,
+   tamper-evident and replayable, exportable for your auditor.
 
-You install it as a proxy/SDK in an afternoon (`npm install`, point your agent's
-tool calls at us). It's model-agnostic and framework-agnostic — works with OpenAI,
-Anthropic, LangGraph, CrewAI, custom loops, MCP servers, whatever.
+**Deploy modes (this is a real engineering answer, not a hand-wave):** you can run
+WARDEN as an inline proxy or as a sidecar/SDK. Most teams start with the SDK wrapping
+their tool-call layer — no new network hop, ~single-digit-ms overhead, and it
+**fails open** on the enforcement path with async logging, so WARDEN can never take
+down prod. Teams that want hard enforcement graduate to the inline proxy in
+**fail-closed** mode for their highest-risk agents. Model- and framework-agnostic:
+OpenAI, Anthropic, LangGraph, CrewAI, MCP servers, custom loops.
+
+## What's open source vs. paid (the monetization boundary)?
+
+Open source is the **single-agent** proxy/SDK and a **local, ephemeral** log — enough
+to govern one agent and win the developer. We monetize the moment governance goes
+**multi-agent and multi-team**: the centralized, tamper-evident, cryptographically
+attested **log of record** — with retention, replay, cross-tool correlation, and
+auditor-export — lives only in the hosted/enterprise tier. The OSS log is per-agent
+and local; the compliance system-of-record is centralized and immutable, and it's
+ours. You can self-host to try. You cannot pass a SOC 2 on the free tier. That's the
+paywall, and it's the same line every account crosses the first time an auditor asks
+"show me what your agents did."
 
 ## Why did you pick this idea? Do you have domain expertise?
 
-We're building the thing we needed and couldn't buy. We [build/ship agent systems
-in production / built internal agents at ___], and the moment an agent went past a
-demo we hit the same wall: to make it useful we had to hand it real credentials, and
-the second we did that, security and compliance (rightly) panicked. There was no
-"Okta for the agent" — a way to give an agent scoped power and keep a provable record
-of what it did. We are the exact users of this product, we speak the buyer's
-language (platform + security engineers), and we can build the hard part — a
-low-latency policy proxy and a tamper-evident action log — fast. This is the one
-idea on our list with zero domain gate: it sells to our own tribe.
+> [Founder: make this specific and true. Template below is the shape that lands.]
+At [company] I built the internal agent platform that [N] engineers used to run
+[specific workflow — e.g., automated infra remediation / data pipelines] in
+production. I personally handed those agents scoped cloud credentials and then spent
+[weeks] hand-rolling an approval-and-audit layer because nothing existed to buy — that
+hacked-together system is the seed of WARDEN. I've been the platform engineer who gets
+the "you gave an agent prod access?" message from security. I'm building the tool I
+already tried to build once internally and shouldn't have had to. This is the one idea
+where I'm the buyer, the builder, and the user — no domain gate.
 
 ## Why now?
 
 Two step-changes collided in 2025–26. (1) Agents crossed from demo to production —
-companies now run internal agents in eng, ops, support, and finance that *take
-actions*, not just generate text. (2) The number of non-human identities (service
-accounts, agent credentials) has exploded past human identities, and auditors have
-started flagging ungoverned agent access in SOC 2 / ISO reviews. The forcing
-function isn't hype — it's the audit. You could not have sold this in 2022 because
-agents didn't take real actions; you can't avoid it in 2026 because they do and the
-auditor is asking.
+they now *take actions* in eng, ops, support, and finance, not just generate text.
+(2) Non-human identities have exploded past human identities, and SOC 2 / ISO auditors
+have started writing findings on ungoverned agent access — a real access-control
+(e.g. SOC 2 CC6.x) finding when an agent holds a standing prod credential. The forcing
+function isn't hype, it's the audit. Impossible to sell in 2022 (agents took no real
+actions); impossible to avoid in 2026 (they do, and the auditor is asking).
 
 ## Who are your competitors? Who do you fear most?
 
-We're clear-eyed that this is a live land-rush, and our edge is depth on the
-agent-native workflow + the action-of-record, not being first.
-- **Incumbents waking up:** Okta (announced identity for AI agents / cross-app
-  access) and HashiCorp Vault (secrets) — our real long-term fear. Their advantage
-  is distribution to the exact CISO we sell to. Our defense: they're identity/secrets
-  companies; the *replayable cross-tool audit log* is a different, stickier surface
-  their models don't naturally produce, and we get there first and deepest.
-- **Adjacent startups:** non-human-identity/workload-identity players (Aembit,
-  Astrix, Teleport-style access), LLM-security/guardrail startups (prompt-injection,
-  runtime firewalls), and agent-observability tools (LangSmith, Langfuse) that log
-  traces but don't *govern* or produce an audit-of-record.
-- **Who we fear most:** Okta shipping "good enough" governance bundled free into a
-  renewal. We beat that by owning the audit/compliance system-of-record — once your
-  auditor runs on our log, ripping us out means losing your audit trail.
+We're clear-eyed that this is a live land-rush; our edge is depth on agent-native
+workflow + the action-of-record, not being first.
+- **Runtime owners (our biggest existential threat):** MCP, the OpenAI Agents SDK /
+  AgentKit, and LangGraph Platform are building tool-permissioning and human-approval
+  primitives into the runtime we plug into. If approvals go native to the framework,
+  a thin proxy is disintermediated. Our answer: the cross-tool, cross-framework *audit
+  system of record* is exactly what a single runtime can't own — it spans all of them.
+- **Hyperscaler IAM:** Microsoft Entra Agent ID, AWS Bedrock AgentCore, Google — each
+  shipping agent identity with distribution to our exact CISO. The "good-enough free
+  bundle" risk is more likely to come from here than from Okta.
+- **Identity/secrets incumbents:** Okta (identity for AI agents), HashiCorp Vault,
+  Aembit/Astrix/Teleport (non-human & workload identity) — capture *access granted*,
+  not *actions taken*.
+- **Compliance-automation:** Vanta / Drata own the auditor relationship today; the
+  natural place agent-governance evidence gets bolted on. We integrate with them and
+  become the agent-action feed their audits consume.
+- **Observability:** LangSmith / Langfuse log traces but don't govern or produce an
+  audit-of-record.
+- **Who we fear most:** the runtime owners making governance native. We beat it by
+  owning the boring, cross-tool compliance system-of-record before they extend past
+  their own walls.
 
 ## What's new? What do people do today because this doesn't exist?
 
-Today teams do one of three bad things: (a) hand the agent full credentials and hope,
-(b) hard-code brittle per-agent guardrails by hand, or (c) refuse to ship the agent
-to production at all (the most common — governance is the #1 blocker to agents in
-prod). What's new: a single runtime layer that makes an agent *safe to deploy* and
-*provable after the fact*, across any framework, with the audit log as a first-class
-product rather than a side effect of observability.
+Today teams (a) hand the agent full credentials and hope, (b) hand-code brittle
+per-agent guardrails, or (c) refuse to ship to production at all (most common). What's
+new: one runtime layer that makes an agent *safe to deploy* and *provable after the
+fact*, across any framework, with the audit-of-record as a first-class product rather
+than a byproduct of tracing.
 
 ## How do you make money? How big can it get?
 
-Open-core. The proxy + basic audit SDK are open source (distribution + developer
-trust). Paid tiers priced on usage (agents governed / actions audited) + enterprise
-seats for the policy console, SSO, retention, and compliance exports. Land bottoms-up
-with a platform engineer, expand to a security/platform team contract
-([target] $2–5K/mo entry, $50–200K enterprise ACV).
-Endgame: every company running agents needs a system of record for "what are our
-agents allowed to do, and what did they do." If agents become the majority of
-actors hitting internal systems, that control plane is infrastructure on the scale
-of identity — a multi-billion-dollar seat at the center of every company's agent
-stack. TAM = the security/identity budget line item that agents create.
+Open-core, land dev-led / expand security-led. The **conversion trigger is concrete**:
+a free proxy install becomes a paid contract the first time the team needs multi-agent
+governance or an auditor asks for the action log — SOC 2 season is the mechanized
+forcing function, not a vibe. Entry [$2–5K/mo], enterprise ACV [$50–200K] with the
+console, SSO, retention, and compliance exports. Endgame: every company running agents
+needs a system of record for "what are our agents allowed to do, and what did they do."
+If agents become the majority of actors hitting internal systems, that control plane is
+infrastructure on the scale of identity — a multi-billion-dollar category seat.
 
-## How far along are you? Traction?
-
-[Fill with real numbers before submitting. Target state for a strong app:]
-- Open-sourced the WARDEN proxy + audit-log SDK on [date]; [N] GitHub stars,
-  [N] installs, [notable inbound].
-- [N] design partners running it against real internal agents ([names/logos or
-  "two Series B fintech/dev-tools companies"]).
-- [First paid pilot / LOI], triggered by [their SOC 2 auditor flagging agent access].
-- Demo video: [link] — show an agent try to exfil data / overspend, WARDEN blocks
-  it, then replay the full audit log for an "auditor."
+## Traction bar — what must be TRUE for this to be a YES (governance infra sells on evidence, not stars)
+1. **2–3 design partners running WARDEN in production** (not demos) against real
+   internal agents — crisp descriptors even if unnamed (stage, eng headcount, what the
+   agents do).
+2. **≥1 paid pilot or signed LOI** (even $1–2K/mo) — the thesis is that this is a budget
+   line; a partner who won't pay undercuts it.
+3. **The auditor anecdote, real and specific:** one named framework control (SOC 2
+   CC6.x), one real finding ("agent held a live Postgres credential"), WARDEN's log
+   closing it. This single anecdote is worth more than any usage metric — it makes the
+   moat present-tense. **Lead with it.**
+4. OSS as *supporting* evidence only: meaningful weekly installs + one notable inbound
+   company. Not raw star count.
+Not enough: OSS launch + stars + "lots of inbound" + zero paid usage.
 
 ## How will you get your first users?
+Developer-led. (1) Show HN / OSS launch of the proxy + audit log. (2) Direct outreach
+to Heads of Platform/Security and staff platform engineers at Series B–D companies we
+know run internal agents in prod (sourced from "AI engineer, internal agent platform"
+job posts + our network + YC network). "Your agents are holding live prod creds right
+now — want scoped creds + a full replayable audit log before your next SOC 2?" No
+procurement wall, no BAA, no domain gate: we sell to engineers, as engineers.
 
-Developer-led. (1) Show HN / open-source launch of the proxy + audit log. (2) Direct
-outreach to Heads of Platform/Security and staff platform engineers at Series B–D
-companies we know run internal agents in prod (sourced from job posts for "AI
-engineer, internal agent platform" + our network + YC network). Script: "Your agents
-are holding live prod creds right now — want scoped creds + a full replayable audit
-log before your next SOC 2?" No procurement wall, no BAA, no domain gate: we sell to
-engineers, as engineers.
+## Biggest risk (and how we retire it)
+Risk: it's a feature a runtime owner or Okta bolts on. Retirement: own the cross-tool
+audit-of-record as a standalone compliance system-of-record fast; make the OSS proxy
+the default install so we own the developer relationship before the CISO gets the
+upsell; go deep on agent-native workflows the identity/runtime incumbents won't
+prioritize because they're busy defending their own surface.
 
-## The single biggest risk (and how we retire it)
-Risk: "it's a feature Okta bolts on." Retirement: win the audit-of-record as a
-standalone system of record fast, go deep on agent-native workflows the identity
-incumbents won't prioritize, and make the OSS proxy the default install so we own
-the developer relationship before the CISO gets the Okta upsell.
-
-## Why us (founder-market fit, one paragraph for the "why will you win" question)
-We are the buyer and the builder. We ship agent systems, we've felt this exact pain,
-we can build a low-latency policy proxy + tamper-evident log, and we sell to
-engineers without pretending to be someone we're not. Our whole moat strategy —
-audit-of-record — is the boring, compliance-shaped surface that founders chasing the
-sexy "agent identity" headline will under-build. We'll out-execute them on the part
-that's sticky.
+## The experiment to run THIS WEEK
+Ship the OSS proxy + audit log (Show HN). In parallel, email 15 Heads of
+Platform/Security at companies known to run internal agents: "Are your agents holding
+live prod creds right now? Would you pay for scoped/revocable creds + a full replayable
+audit log before your next SOC 2?" **Kill signal:** <3/15 say "live problem, I'd pay
+this quarter" AND the OSS drop draws no real installs → pain is 12 months early.
+**Go signal:** 3+ paid-pilot yeses or genuine OSS inbound.

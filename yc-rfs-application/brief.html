@@ -1,0 +1,289 @@
+<title>From 15 to 2 — YC RFS Convergence Brief</title>
+<style>
+  :root{
+    --paper:#F5F1EA; --card:#FBF8F2; --ink:#161310; --ink-soft:#4A443C;
+    --line:#DED6C7; --line-strong:#C9BEA9;
+    --accent:#C6551D; --accent-soft:#EFD9C8;
+    --good:#3E7A4E; --good-bg:#E2EEDF;
+    --bad:#A4392F; --bad-bg:#F3DED9;
+    --warn:#9A6B12; --warn-bg:#F1E5CA;
+    --shadow:0 1px 2px rgba(60,45,25,.06),0 8px 30px rgba(60,45,25,.05);
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#161310; --card:#1F1B16; --ink:#F3EDE3; --ink-soft:#B3A997;
+      --line:#332C23; --line-strong:#463C2F;
+      --accent:#F0813F; --accent-soft:#3A2717;
+      --good:#7FC08C; --good-bg:#1C2A1E;
+      --bad:#E68A7D; --bad-bg:#2E1B18;
+      --warn:#E0B45C; --warn-bg:#2C2411;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 34px rgba(0,0,0,.34);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#161310; --card:#1F1B16; --ink:#F3EDE3; --ink-soft:#B3A997;
+    --line:#332C23; --line-strong:#463C2F;
+    --accent:#F0813F; --accent-soft:#3A2717;
+    --good:#7FC08C; --good-bg:#1C2A1E; --bad:#E68A7D; --bad-bg:#2E1B18;
+    --warn:#E0B45C; --warn-bg:#2C2411;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 34px rgba(0,0,0,.34);
+  }
+  :root[data-theme="light"]{
+    --paper:#F5F1EA; --card:#FBF8F2; --ink:#161310; --ink-soft:#4A443C;
+    --line:#DED6C7; --line-strong:#C9BEA9;
+    --accent:#C6551D; --accent-soft:#EFD9C8;
+    --good:#3E7A4E; --good-bg:#E2EEDF; --bad:#A4392F; --bad-bg:#F3DED9;
+    --warn:#9A6B12; --warn-bg:#F1E5CA;
+    --shadow:0 1px 2px rgba(60,45,25,.06),0 8px 30px rgba(60,45,25,.05);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:960px;margin:0 auto;padding:clamp(24px,5vw,64px) clamp(18px,4vw,40px);}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;}
+  h1{font-size:clamp(30px,6vw,52px);line-height:1.02;letter-spacing:-.02em;font-weight:800;
+    margin:.35em 0 .3em;text-wrap:balance;}
+  h2{font-size:clamp(20px,3.4vw,26px);letter-spacing:-.01em;font-weight:750;margin:0 0 .2em;
+    text-wrap:balance;}
+  h3{font-size:17px;font-weight:750;margin:0;letter-spacing:-.01em;}
+  p{margin:.5em 0;max-width:66ch;color:var(--ink-soft);}
+  .lede{font-size:clamp(16px,2.2vw,19px);color:var(--ink);max-width:64ch;}
+  header .meta{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);
+    display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:18px;border-top:1px solid var(--line);
+    padding-top:16px;}
+  section{margin-top:clamp(40px,7vw,72px);}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:22px;
+    border-bottom:1px solid var(--line);padding-bottom:10px;}
+  .sec-head .n{font-family:var(--mono);font-size:12.5px;color:var(--accent);font-weight:600;}
+
+  /* Funnel */
+  .funnel{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+  .stage{background:var(--card);border:1px solid var(--line);border-radius:12px;
+    padding:16px 14px 14px;box-shadow:var(--shadow);position:relative;}
+  .stage .num{font-size:clamp(26px,5vw,40px);font-weight:800;letter-spacing:-.03em;
+    font-variant-numeric:tabular-nums;line-height:1;}
+  .stage .lab{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-soft);margin-top:8px;line-height:1.35;}
+  .stage.final{border-color:var(--accent);background:linear-gradient(180deg,var(--accent-soft),var(--card));}
+  .stage.final .num{color:var(--accent);}
+  .funnel-note{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);margin-top:12px;text-align:center;}
+
+  /* Finalist cards */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px;
+    box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px;}
+  .card.primary{border-color:var(--accent);}
+  .card .top{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+  .rank{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    font-weight:600;padding:4px 9px;border-radius:999px;border:1px solid var(--line-strong);
+    color:var(--ink-soft);white-space:nowrap;}
+  .card.primary .rank{color:var(--accent);border-color:var(--accent);}
+  .cat{font-family:var(--mono);font-size:11.5px;color:var(--ink-soft);}
+  .oneliner{color:var(--ink);font-weight:500;}
+  .pill{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11.5px;
+    font-weight:600;padding:4px 10px;border-radius:999px;width:fit-content;letter-spacing:.03em;}
+  .pill.fund{background:var(--good-bg);color:var(--good);}
+  .pill.cond{background:var(--warn-bg);color:var(--warn);}
+  .pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;}
+  .card ul{margin:2px 0 0;padding-left:0;list-style:none;display:flex;flex-direction:column;gap:8px;}
+  .card li{font-size:14px;color:var(--ink-soft);padding-left:18px;position:relative;max-width:none;}
+  .card li::before{content:"";position:absolute;left:0;top:9px;width:6px;height:6px;border-radius:1px;
+    background:var(--accent);transform:rotate(45deg);}
+  .card li b{color:var(--ink);font-weight:650;}
+
+  /* Matrix */
+  .scroll{overflow-x:auto;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);}
+  table{border-collapse:collapse;width:100%;min-width:640px;background:var(--card);font-size:14px;}
+  th,td{text-align:left;padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:top;}
+  thead th{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-soft);font-weight:600;background:transparent;}
+  tbody tr:last-child td{border-bottom:none;}
+  td.co{font-weight:750;color:var(--ink);white-space:nowrap;}
+  td .rfs{display:block;font-family:var(--mono);font-size:11px;color:var(--ink-soft);font-weight:400;margin-top:2px;}
+  .tag{font-family:var(--mono);font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px;white-space:nowrap;}
+  .tag.adv{background:var(--good-bg);color:var(--good);}
+  .tag.cut{background:var(--bad-bg);color:var(--bad);}
+  .tag.piv{background:var(--warn-bg);color:var(--warn);}
+
+  /* Callout */
+  .callout{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);
+    border-radius:12px;padding:22px 24px;box-shadow:var(--shadow);}
+  .callout h2{margin-bottom:6px;}
+
+  /* Actions */
+  .actions{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .act{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;
+    box-shadow:var(--shadow);}
+  .act .co{font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--accent);font-weight:600;text-transform:uppercase;}
+  .act p{font-size:14px;margin:.45em 0;}
+  .signal{font-family:var(--mono);font-size:12px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line-strong);}
+  .signal .go{color:var(--good);font-weight:600;}
+  .signal .kill{color:var(--bad);font-weight:600;}
+
+  footer{margin-top:64px;border-top:1px solid var(--line);padding-top:20px;
+    font-family:var(--mono);font-size:12px;color:var(--ink-soft);}
+  .rec{background:var(--accent);color:#fff;border-radius:14px;padding:20px 24px;margin-top:26px;
+    box-shadow:var(--shadow);}
+  :root[data-theme="dark"] .rec,@media (prefers-color-scheme:dark){}
+  .rec b{color:#fff;}
+  .rec p{color:#fff;opacity:.95;max-width:70ch;margin:0;}
+  .rec .eyebrow{color:#fff;opacity:.85;}
+  @media (max-width:680px){
+    .cards,.actions{grid-template-columns:1fr;}
+    .funnel{grid-template-columns:repeat(2,1fr);}
+    .stage.s5{grid-column:span 2;}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .stage,.card,.act{transition:transform .18s ease;}
+    .card:hover{transform:translateY(-2px);}
+  }
+  a{color:var(--accent);}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">YC Summer 2026 · Requests for Startups</div>
+    <h1>From 15 ideas to 2 applications</h1>
+    <p class="lede">Fifteen RFS categories, five drafted companies, three adversarial YC-partner
+      personas, and four rounds of mock interviews — converged onto the two applications a
+      technical founder could actually submit and win.</p>
+    <div class="meta">
+      <span>METHOD · adversarial sub-agent review</span>
+      <span>ROUNDS · 4</span>
+      <span>PARTNER SIMS · 7</span>
+      <span>SURVIVORS · 2</span>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head"><span class="n">01</span><h2>The funnel</h2></div>
+    <div class="funnel">
+      <div class="stage s1"><div class="num">15</div><div class="lab">RFS categories</div></div>
+      <div class="stage s2"><div class="num">6</div><div class="lab">Software-buildable · fundable by a solo tech founder</div></div>
+      <div class="stage s3"><div class="num">5</div><div class="lab">Drafted as specific companies</div></div>
+      <div class="stage s4"><div class="num">3</div><div class="lab">Survived the panel</div></div>
+      <div class="stage s5 final"><div class="num">2</div><div class="lab">Submission-ready</div></div>
+    </div>
+    <p class="funnel-note">Hard-tech categories (inference chips, space electronics, counter-swarm, semiconductor supply chain) cut early — capital &amp; teams a modal technical founder can't field.</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">02</span><h2>The two finalists</h2></div>
+    <div class="cards">
+      <div class="card primary">
+        <div class="top"><h3>WARDEN</h3><span class="rank">★ Primary</span></div>
+        <span class="cat">RFS · Software for Agents</span>
+        <p class="oneliner">The runtime control plane + audit-log-of-record companies install
+          before they let AI agents touch production.</p>
+        <span class="pill fund">Fund · with traction</span>
+        <ul>
+          <li><b>Why it won:</b> the only idea where founder-market fit is <b>provable, not borrowed</b> — the founder is buyer, builder, and user. Unanimous top pick across all 7 partner sims.</li>
+          <li><b>Wedge:</b> agents holding live prod creds with no leash = a SOC 2 nightmare <b>today</b>. OSS-led, first paid pilot ~month 2–3.</li>
+          <li><b>Moat:</b> the cross-tool, tamper-evident <b>action-of-record</b> — identity vendors capture access granted, not actions taken.</li>
+          <li><b>To be a YES:</b> 2–3 prod design partners, ≥1 paid pilot, and one real <b>auditor-forced-us-to-buy</b> anecdote.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="top"><h3>OVERTURN</h3><span class="rank">◇ Conditional #2</span></div>
+        <span class="cat">RFS · AI-Native Service Companies</span>
+        <p class="oneliner">An AI-native behavioral-health insurance-denials recovery firm —
+          paid only when the clinic gets paid.</p>
+        <span class="pill cond">Fund · if the gate clears</span>
+        <ul>
+          <li><b>Bigger market, higher gate.</b> $260B in denied claims; contingency = the easiest first sale in healthcare.</li>
+          <li><b>The drags WARDEN lacks:</b> PHI/BAA gating, negative working capital, a services-margin skeptic tax.</li>
+          <li><b>North Star:</b> automation rate — the one number that separates a software company from a Manila BPO.</li>
+          <li><b>Flips to #1 IF:</b> a design-partner book at ≥60% measured automation <b>and</b> a committed RCM operator/cofounder.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">03</span><h2>How the five were judged</h2></div>
+    <div class="scroll">
+      <table>
+        <thead><tr><th>Company</th><th>Verdict</th><th>The kill-shot / the pivot</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="co">WARDEN<span class="rfs">Software for Agents</span></td>
+            <td><span class="tag adv">Advanced</span></td>
+            <td>Repivot of HARBOR — two hostile reviewers <b>independently invented the same company</b>: drop the payment rail Visa/Stripe own, govern the agents instead.</td>
+          </tr>
+          <tr>
+            <td class="co">OVERTURN<span class="rfs">AI-Native Services</span></td>
+            <td><span class="tag adv">Advanced</span></td>
+            <td>Realest wound + easiest first sale, but must prove &gt;90% automation or stay a BPO. Carried as the conditional #2.</td>
+          </tr>
+          <tr>
+            <td class="co">MERIDIAN<span class="rfs">SaaS Challengers</span></td>
+            <td><span class="tag piv">Parked</span></td>
+            <td>Best <b>business model</b> of all five — but uninvestable-by-this-team without an insurance-native cofounder. Your #1 the day you recruit one.</td>
+          </tr>
+          <tr>
+            <td class="co">CORTEX<span class="rfs">Company Brain</span></td>
+            <td><span class="tag cut">Cut</span></td>
+            <td>Squeezed between Glean (knowledge) and Decagon/Sierra (resolution), who own its inputs and outputs. "Executable ≠ search" was a demo, not a moat.</td>
+          </tr>
+          <tr>
+            <td class="co">FLUX<span class="rfs">Dynamic Interfaces</span></td>
+            <td><span class="tag cut">Cut · 0/3</span></td>
+            <td>Unanimous. A vitamin and a primitive the frameworks (Vercel/Thesys) absorb for free. No burning wallet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">04</span><h2>The one that got away</h2></div>
+    <div class="callout">
+      <h2>MERIDIAN</h2>
+      <p style="max-width:72ch">An AI-native agency-management system challenging Applied Epic &amp;
+        Vertafore — the hated, sticky, 20-year incumbents 40,000 independent insurance agencies
+        run on. The panel's best-<em>business</em> verdict: clearest enemy, best "why now," expanding
+        ACV, software margins. It was cut for one reason only — it mandates an insurance-native
+        cofounder this founder profile doesn't have, and its "land on top of the incumbent"
+        wedge means reverse-engineering a hostile closed system. <b>Bring the cofounder and this
+        becomes the biggest prize on the board.</b></p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="n">05</span><h2>What to run this week</h2></div>
+    <p style="margin-bottom:20px">Both tests resolve with phone calls, not code — the fastest way to kill or confirm each finalist.</p>
+    <div class="actions">
+      <div class="act">
+        <div class="co">WARDEN</div>
+        <p>Ship the OSS proxy + audit log (Show HN). Email 15 Heads of Platform/Security at
+          companies known to run internal agents in prod: <em>"Are your agents holding live prod
+          creds right now — would you pay for scoped creds + a full audit log before your next
+          SOC 2?"</em></p>
+        <div class="signal"><span class="go">GO</span> ≥3/15 say "I'd pay this quarter" or real OSS installs.<br>
+          <span class="kill">KILL</span> &lt;3 and a silent launch → pain is 12 months early.</div>
+      </div>
+      <div class="act">
+        <div class="co">OVERTURN</div>
+        <p>Get de-identified denials from one friendly clinic; run the agent on 200 real cases for
+          a measured automation rate. Email 15 practice managers + 5 roll-up VPs of RCM for a
+          contingency book.</p>
+        <div class="signal"><span class="go">GO</span> a book loads <em>and</em> automation ≥60%.<br>
+          <span class="kill">KILL</span> 3 weeks, no book handed over → the access wall is fatal.</div>
+      </div>
+    </div>
+    <div class="rec">
+      <div class="eyebrow">Recommendation</div>
+      <p><b>Build WARDEN now.</b> Run the OVERTURN experiment in parallel. If the book and the RCM
+        cofounder both materialize within ~2 weeks, submit both — otherwise submit WARDEN and keep
+        MERIDIAN in your back pocket for the day the right cofounder walks in.</p>
+    </div>
+  </section>
+
+  <footer>
+    Built through 7 adversarial YC-partner simulations across 4 rounds · RFS categories per YC Summer 2026 ·
+    Full applications &amp; round-by-round transcripts in the repo.
+  </footer>
+</div>
